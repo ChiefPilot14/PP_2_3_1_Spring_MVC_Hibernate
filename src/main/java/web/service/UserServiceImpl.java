@@ -6,6 +6,7 @@ import web.dao.UserDaoHibernateImpl;
 import web.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,10 +35,21 @@ public class UserServiceImpl implements UserService {
 
     }
 
+
     @Override
     public void removeUserById(long id) {
         userDaoHibernateImpl.removeUserById(id);
 
+    }
+
+    @Override
+    public void saveUserById(long id, String name, String lastName, byte age) {
+        userDaoHibernateImpl.saveUserById(id, name, lastName, age);
+    }
+
+    @Override
+    public List<User> getUserById(long id) {
+        return userDaoHibernateImpl.getUserById(id);
     }
 
     @Override
@@ -48,6 +60,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public void cleanUsersTable() {
         userDaoHibernateImpl.cleanUsersTable();
-
     }
 }

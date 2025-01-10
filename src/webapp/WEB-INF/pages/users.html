@@ -11,12 +11,16 @@
         <th>name</th>
         <th>lastname</th>
         <th>age</th>
+        <th>удалить</th>
+        <th>редактировать</th>
     </tr>
     <tr th:each="user : ${users}">
         <td th:text="${user.id}"></td>
         <td th:text="${user.name}"></td>
         <td th:text="${user.lastName}"></td>
         <td th:text="${user.age}"></td>
+        <td><a th:href="@{/delete(id=${user.id})}">удалить</a></td>
+        <td><a th:href="@{/edit(id=${user.id})}">редактировать</a></td>
     </tr>
 </table>
 </body>

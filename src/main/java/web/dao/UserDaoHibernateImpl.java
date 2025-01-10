@@ -8,6 +8,7 @@ import web.config.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -76,9 +77,12 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
-        try (EntityManager entityManager = Util.getEntityManager()) {
-            EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager entityManager = Util.getEntityManager();
+        EntityTransaction transaction = null;
 
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
             try {
                 User user = entityManager.find(User.class, id);
                 if (user != null) {
@@ -94,6 +98,43 @@ public class UserDaoHibernateImpl implements UserDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void saveUserById(long id, String name, String lastName, byte age) {
+        EntityManager entityManager = Util.getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            User user = entityManager.find(User.class, id);
+            user.setName(name);
+            user.setLastName(lastName);
+            user.setAge(age);
+            entityManager.persist(user);
+            transaction.commit();
+            System.out.println("User с именем — " + name + " изменён в базе данных");
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+
+    }
+
+    @Override
+    public List<User> getUserById(long id) {
+        EntityManager entityManager = Util.getEntityManager();
+        List<User> user = new ArrayList<>();
+        user.add(entityManager.find(User.class, id));
+        return user;
     }
 
     @Override
