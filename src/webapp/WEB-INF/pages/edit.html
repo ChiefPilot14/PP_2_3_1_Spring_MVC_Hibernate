@@ -1,40 +1,33 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Редактирование пользователей</title>
+    <meta charset="UTF-8">
+    <title>Редактирование пользователя</title>
+    <script>
+        function updateFormAction() {
+            const form = document.querySelector('form');
+            const url = `/save/${form['id'].value}/${form['name'].value}/${form['lastName'].value}/${form['age'].value}`;
+            form.action = url;
+        }
+    </script>
 </head>
 <body>
-<h1>Список пользователей</h1>
-
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Имя</th>
-        <th>Фамилия</th>
-        <th>Возраст</th>
-        <th>Действие</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!--        <tr th:each="user : ${users}">-->
-    <!--            <td th:text="${user.id}"></td>-->
-    <!--            <td><input type="text" th:field="*{name}" th:value="${user.name}" /></td>-->
-    <!--            <td><input type="text" th:field="*{lastname}" th:value="${user.lastname}" /></td>-->
-    <!--            <td><input type="number" th:field="*{age}" th:value="${user.age}" /></td>-->
-    <!--            <td><button type="submit">Сохранить</button></td>-->
-    <!--        </tr>-->
-        <tr th:each="user : ${users}">
-            <td th:text="${user.id}"></td>
-           <td><input type="text"  th:value="${user.name}" /></td>
-            <td><input type="text"  th:value="${user.lastname}" /></td>
-            <td><input type="number"  th:value="${user.age}" /></td>
-            <td><button type="submit">Сохранить</button></td>
-        </tr>
-
-    </tbody>
-</table>
-
+<h1>Редактирование пользователя</h1>
+<form action="#" onsubmit="updateFormAction()" method="post" th:object="${user}">
+    <input type="hidden" th:field="*{id}" />
+    <p>
+        Имя:<br/>
+        <input type="text" th:field="*{name}" required  onchange="updateFormAction()"/>
+    </p>
+    <p>
+        Фамилия:<br/>
+        <input type="text" th:field="*{lastName}" required  onchange="updateFormAction()"/>
+    </p>
+    <p>
+        Возраст:<br/>
+        <input type="number" min="0" max="150" th:field="*{age}" required onchange="updateFormAction()"/>
+    </p>
+    <button type="submit">Сохранить изменения</button>
+</form>
 </body>
 </html>
