@@ -4,12 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import web.model.User;
 import web.service.UserServiceImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class UsersController {
@@ -22,7 +21,7 @@ public class UsersController {
     }
 
     @GetMapping("/")
-    public String showAllUsers(HttpServletRequest request, Model model) {
+    public String showAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "users";
@@ -37,36 +36,42 @@ public class UsersController {
         return "users";
     }
 
-    @GetMapping("/edit{id}")
+    @GetMapping("/edit")
     public String editUserById(HttpServletRequest request, Model model) {
         int id = Integer.parseInt(request.getParameter("id"));
-        List<User> users = userService.getUserById(id);
-        model.addAttribute("users", users);
+        User user = userService.getUserById(id).get(0);
+        model.addAttribute("user", user);
         return "edit";
     }
 
-    @GetMapping("/save{id}")
-    public String saveUserById(HttpServletRequest request, Model model) {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String name = request.getParameter("name");
-        String lastname = request.getParameter("lastname");
-        byte age = Byte.parseByte(request.getParameter("age"));
-        userService.saveUserById(id, name, lastname, age);
+    @PostMapping("/save/{id}/{name}/{lastName}/{age}")
+    public String saveUser(
+            @PathVariable("id") Long id,
+            @PathVariable("name") String name,
+            @PathVariable("lastName") String lastName,
+            @PathVariable("age") Byte age,
+            Model model) {
+
+        userService.saveUserById(id, name, lastName, age);
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "users";
+
+    }
+    @GetMapping("/add-user")
+    public String addUserForm() {
+        return "add-user";
     }
 
-
-//    private int parseId(HttpServletRequest request) {
-//        String param = request.getParameter("id");
-//        if (param != null && !param.isEmpty()) {
-//            try {
-//                return Integer.parseInt(param);
-//            } catch (NumberFormatException e) {
-//                System.err.println("Invalid id parameter: " + param);
-//            }
-//        }
-//        return 0;
-//    }
+    @PostMapping("/create")
+    public String createNewUser(@ModelAttribute User user, Model model) {
+        userService.saveUser(user.getName(), user.getLastName(), user.getAge());
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "redirect:/";
+    }
 }
+
+
+
+
