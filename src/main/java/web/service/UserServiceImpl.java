@@ -45,8 +45,4 @@ public class UserServiceImpl implements UserService {
         return userDao.findAll();
     }
 
-    @Override
-    public void cleanUsersTable() {
-        userDao.cleanUsersTable();
-    }
 }

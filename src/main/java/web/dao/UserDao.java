@@ -21,16 +21,6 @@ public interface UserDao extends JpaRepository<User, Long> {
     @Query("DELETE FROM User u WHERE u.id = :id")
     void deleteUserById(@Param("id") long id);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE User u SET u.name = :name, u.lastName = :lastName, u.age = :age WHERE u.id = :id")
-    void updateUserById(@Param("id") long id, @Param("name") String name, @Param("lastName") String lastName, @Param("age") int age);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM User")
-    void cleanUsersTable();
-
     default void addUser(String name, String lastName, byte age) {
         User user = new User(name, lastName, age);
         save(user);
